@@ -28,11 +28,11 @@ lint: ## Run linters tests
 
 .PHONY: sum
 sum: ## Generate summary of the project
-	lsproj > lsproj > sum.txt && lsproj | pysum >> sum.txt
+	pysum > sum.txt
 
 .PHONY: all
 all: ## Put whole project code into a file
-	lsproj | xargs mdcat -o all.txt
+	find src -type f -not -name "*.pyc" | xargs mdcat -o all.txt
 
 .PHONY: mut
 mut: ## Run mutation tests

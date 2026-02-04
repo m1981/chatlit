@@ -1,38 +1,24 @@
 import streamlit as st
-from src.components.selectable_text import selectable_text
+from src.components.chat_bubble import chat_bubble
+from src.core.state_manager import StateManager
 
 
-def render_chat_area(state):
-    """
-    Renders the middle column: The Message Feed.
-    """
-    st.markdown("### Current Chat")  # Header
+def render_chat_area(state: StateManager):
+    messages = state.get_messages()
 
-    # 1. The Message Loop
-    for msg in state.active_chat.messages:
+    if not messages:
+        st.info("No messages yet.")
+        return
 
-        # Determine styling based on role
-        if msg.role == "user":
-            with st.chat_message("user", avatar="👤"):
-                # User text is usually static, but let's make it selectable too
-                st.write(msg.content)
-        else:
-            with st.chat_message("assistant", avatar="🤖"):
-                # Check if this message is the target of a "Scroll To" action
-                is_target = (state.scroll_target_id == msg.id)
+    with st.container(height=500):
+        for msg in messages:
+            result = chat_bubble(
+                content=msg['content'],
+                message_id=msg['id'],
+                is_starred=msg['starred'],
+                key=msg['id']
+            )
 
-                # RENDER V2 COMPONENT
-                # This draws the bubble AND listens for text selection
-                selection = selectable_text(
-                    text=msg.content,
-                    key=msg.id,
-                    is_target=is_target
-                )
-
-                # Handle the event immediately
-                if selection:
-                    state.handle_new_highlight(selection, msg.id)
-
-    # Reset scroll target after rendering once so it doesn't jump on every interaction
-    if state.scroll_target_id:
-        state.scroll_target_id = None
+            if result.star_clicked:
+                state.toggle_star(result.star_clicked)
+                st.rerun()
