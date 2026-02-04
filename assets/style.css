@@ -1,0 +1,34 @@
+/* assets/style.css */
+
+/* 1. Force the main container to be full height */
+.stApp {
+    height: 100vh;
+    overflow: hidden; /* Prevent body scroll */
+}
+
+/* 2. Target the 3 columns created by st.columns */
+/* Note: This relies on Streamlit's internal structure.
+   We often target div[data-testid="column"] */
+
+div[data-testid="column"] {
+    height: 90vh; /* Leave room for header/footer */
+    overflow-y: auto; /* Allow independent scrolling */
+    padding-right: 10px; /* Breathing room */
+}
+
+/* 3. Style the Middle Column (Chat) specifically */
+/* We usually identify it by index or context, but for MVP,
+   let's just ensure all columns scroll independently. */
+
+/* 4. Hide the default Streamlit header/footer for immersion */
+header {visibility: hidden;}
+footer {visibility: hidden;}
+
+/* 5. Custom Scrollbar styling (Optional but "Commercial Grade") */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
